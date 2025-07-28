@@ -1,22 +1,13 @@
 """Admin page E2E tests"""
-from selenium.webdriver.common.by import By
-
-from src.conftest import wait_for
+from src.pages.admin.login_page import AdminLoginPage
+from src.pages.admin.admin_account_page import AdminDashboardPage
 
 
 def test_admin_login_logout(browser, base_url, admin_credentials):
     """Login to admin page test"""
-    browser.get(f"{base_url}/admin")
+    login = AdminLoginPage(browser, base_url).open_page()
+    login.is_loaded()
+    login.login(admin_credentials["username"], admin_credentials["password"])
 
-    wait_for(browser, by=By.ID, value="input-username").send_keys(admin_credentials["username"])
-    wait_for(browser, by=By.ID, value="input-password").send_keys(admin_credentials["password"])
-    wait_for(browser, by=By.XPATH, value="//button[@type='submit']").click()
-
-    wait_for(browser, url_contains="dashboard")
-    assert "dashboard" in browser.current_url.lower()
-
-    # Ожидаем и кликаем по меню с логином (nav-logout)
-    wait_for(browser, by=By.ID, value="nav-logout").click()
-
-    wait_for(browser, url_contains="login")
-    assert "login" in browser.current_url.lower()
+    dashboard = AdminDashboardPage(browser, base_url).assert_opened()
+    dashboard.logout()
