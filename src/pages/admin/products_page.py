@@ -1,6 +1,7 @@
 """Admin product page"""
 import time
 
+import allure
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,6 +27,7 @@ class AdminProductsPage(BasePage):
     ROW_NAME_CELL = (By.CSS_SELECTOR, "td:nth-child(3)")
     ROW_CHECKBOX = (By.CSS_SELECTOR, "input[type='checkbox']")
 
+    @allure.step("Open page and interact with dashboard page")
     def open_page(self):
         """Open page and interact with dashboard page"""
         self.click(self.MENU_CATALOG)
@@ -33,12 +35,14 @@ class AdminProductsPage(BasePage):
         self.get_element(self.TABLE)
         return self
 
+    @allure.step("Add new product")
     def click_add(self):
         """Add new product"""
         self.click(self.ADD_BUTTON)
         return self
 
     # TODO: Get rid of time.sleep by verifying the presence or absence of the product in the DB, or by refreshing the page
+    @allure.step("Delete product")
     def delete_by_name(self, name: str):
         """Delete product"""
         self.filter_by_name(name)
@@ -57,6 +61,7 @@ class AdminProductsPage(BasePage):
         time.sleep(0.5)
         return self
 
+    @allure.step("Filter products by {name}")
     def filter_by_name(self, name: str):
         """Filter products"""
         try:
@@ -70,6 +75,7 @@ class AdminProductsPage(BasePage):
         self.get_element(self.TABLE)
         return self
 
+    @allure.step("Verify the product {name} is shown")
     def is_product_present(self, name: str) -> bool:
         """Method that verify the product is shown"""
         rows = self.get_elements(self.TABLE_ROWS)
@@ -78,10 +84,12 @@ class AdminProductsPage(BasePage):
                 return True
         return False
 
+    @allure.step("Success message is displayed")
     def success_text(self) -> str:
         """Success message"""
         return self.get_element(self.SUCCESS_ALERT).text
 
+    @allure.step("Get No results text")
     def no_results_text(self) -> str:
         """No results"""
         return self.get_element(self.NO_RESULTS).text
