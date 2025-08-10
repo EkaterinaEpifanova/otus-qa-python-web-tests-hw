@@ -18,7 +18,6 @@ class HomePage(BasePage):
         self.header = HeaderComponent(self)
         self.cart = CartDropdown(self)
 
-    @allure.step("Open registration page")
     def open_page(self):
         """Open registration page"""
         return super().open_page("")

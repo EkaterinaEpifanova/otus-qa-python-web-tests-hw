@@ -15,7 +15,6 @@ class RegisterPage(BasePage):
     SUBMIT = (By.XPATH, "//*[@id='form-register']/div/button")
     SUCCESS_TITLE = (By.XPATH, "//h1[contains(text(), 'Your Account Has Been Created')]")
 
-    @allure.step("Open registration page")
     def open_page(self):
         """Open registration page"""
         return super().open_page("index.php?route=account/register")

@@ -12,8 +12,7 @@ class ProductPage(BasePage):
     APPLE_CINEMA_TITLE = (By.XPATH, "//h1[text()=concat('Apple Cinema 30', '\"')]")
     APPLE_CINEMA_PRODUCT_URL = "index.php?route=product/product&language=en-gb&product_id=42&path=20"
 
-    @allure.step("Open apple cinema product page")
-    def open_apple_cinema(self, path=APPLE_CINEMA_PRODUCT_URL):
+    def open_apple_cinema_page(self, path=APPLE_CINEMA_PRODUCT_URL):
         """Open apple cinema product page"""
         return super().open_page(path)
 

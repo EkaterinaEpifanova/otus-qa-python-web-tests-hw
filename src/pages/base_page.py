@@ -2,6 +2,7 @@
 import os
 from logging import getLogger, FileHandler
 
+import allure
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -28,6 +29,7 @@ class BasePage:
     def _text_xpath(text):
         return f"//*[text()='{text}']"
 
+    @allure.step("Open page")
     def open_page(self, path: str = ""):
         """Open page"""
         self.logger.info(f"Open {path}")

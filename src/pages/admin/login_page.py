@@ -12,7 +12,6 @@ class AdminLoginPage(BasePage):
     SUBMIT = (By.XPATH, "//button[@type='submit']")
     TITLE = (By.CLASS_NAME, "card-header")
 
-    @allure.step("Open page")
     def open_page(self):
         """Open page"""
         return super().open_page("admin")

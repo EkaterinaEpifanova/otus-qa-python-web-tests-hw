@@ -27,7 +27,7 @@ class AdminProductsPage(BasePage):
     ROW_NAME_CELL = (By.CSS_SELECTOR, "td:nth-child(3)")
     ROW_CHECKBOX = (By.CSS_SELECTOR, "input[type='checkbox']")
 
-    @allure.step("Open page and interact with dashboard page")
+    @allure.step("Open admin page and interact with dashboard")
     def open_page(self):
         """Open page and interact with dashboard page"""
         self.click(self.MENU_CATALOG)

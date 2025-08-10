@@ -16,7 +16,6 @@ class CategoryPage(BasePage):
         super().__init__(browser, base_url)
         self.header = HeaderComponent(self)
 
-    @allure.step("Open desktops page")
     def open_page(self, path=DESKTOP_URL):
         """Open desktops page"""
         return super().open_page(path)
