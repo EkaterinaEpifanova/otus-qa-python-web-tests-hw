@@ -1,5 +1,5 @@
 """Create user account page"""
-
+import allure
 from selenium.webdriver.common.by import By
 
 from src.pages.base_page import BasePage
@@ -19,6 +19,7 @@ class RegisterPage(BasePage):
         """Open registration page"""
         return super().open_page("index.php?route=account/register")
 
+    @allure.step("Verify that the registration page contains all required elements")
     def is_loaded(self):
         """Method to verify that the registration page contains all required elements"""
         self.get_element(self.FIRSTNAME)
@@ -28,6 +29,7 @@ class RegisterPage(BasePage):
         self.get_element(self.SUBMIT)
         return True
 
+    @allure.step("Create user")
     def register(self, firstname, lastname, email, password):
         self.input_value(self.FIRSTNAME, firstname)
         self.input_value(self.LASTNAME, lastname)
@@ -37,6 +39,7 @@ class RegisterPage(BasePage):
         self.click(self.SUBMIT)
         return self
 
+    @allure.step("Verify the account page is loaded")
     def is_success(self) -> bool:
         self.get_element(self.SUCCESS_TITLE)
         return True

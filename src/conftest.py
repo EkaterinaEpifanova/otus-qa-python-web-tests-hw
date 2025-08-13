@@ -1,7 +1,9 @@
+import logging
 import random
 import string
 import uuid
 
+import allure
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -30,10 +32,27 @@ def browser(request):
         driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
     else:
         raise ValueError(f"Browser '{browser_name}' is not supported")
-
+    driver.test_name = request.node.name
+    driver.log_level = logging.INFO
     driver.maximize_window()
     yield driver
     driver.quit()
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    rep = outcome.get_result()
+
+    if rep.when == "call" and rep.failed:
+        driver = item.funcargs.get("browser")
+        if driver:
+            screenshot = driver.get_screenshot_as_png()
+            allure.attach(
+                screenshot,
+                name=f"Screenshot_{item.name}",
+                attachment_type=allure.attachment_type.PNG
+            )
 
 
 @pytest.fixture
@@ -64,10 +83,12 @@ def unique_product_name():
 def random_string(length=6):
     return ''.join(random.choices(string.ascii_letters, k=length))
 
+
 @pytest.fixture
 def random_password(length=10):
     chars = string.ascii_letters + string.digits + "!@#"
     return ''.join(random.choices(chars, k=length))
+
 
 @pytest.fixture
 def unique_seo():

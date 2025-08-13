@@ -8,11 +8,14 @@ This project contains automated UI tests for OpenCart using Selenium, pytest, an
 This explains how to run the test_opencart.py test with different params using command-line options.
 
 ```bash
-pytest src/test/ --browser=chrome --base_url=http://localhost:8080
+pytest src/test/ --browser=chrome --base_url=http://localhost:8080 --alluredir=allure-results
+```
+```bash
+allure serve allure-results
 ```
 
 ✅ Requirements
-Python 3.7 or higher, pytest, selenium, webdriver-manager
+Python 3.7 or higher, pytest, selenium, webdriver-manager, allure
 
 - To check your version:
 

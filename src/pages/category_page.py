@@ -1,4 +1,5 @@
 """Product category page"""
+import allure
 from selenium.webdriver.common.by import By
 
 from src.pages.base_page import BasePage
@@ -19,6 +20,7 @@ class CategoryPage(BasePage):
         """Open desktops page"""
         return super().open_page(path)
 
+    @allure.step("Verify the product is shown")
     def is_loaded(self):
         """Method that verify the product is shown"""
         self.get_element(self.TITLE)
