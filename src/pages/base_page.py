@@ -78,7 +78,7 @@ class BasePage:
         """Waiter"""
         WebDriverWait(self.browser, timeout).until(condition)
 
-    def wait_for(self, *, by=None, value=None, url_contains=None, condition=None, timeout=10):
+    def wait_for(self, *, by=None, value=None, url_contains=None, condition=None, timeout=30):
         """Waiter by + value, by URL, by condition"""
         if by and value:
             self.logger.info(f"Wait for {value}")

@@ -28,3 +28,9 @@ python --version
 ```bash
 pip install -r requirements.txt
 ```
+```bash
+docker build . -t tests
+```
+```bash
+docker run -it tests src/test/ --browser=firefox --base_url=http://host.docker.internal:8080 --alluredir=allure-results
+```
