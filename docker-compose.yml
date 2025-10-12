@@ -1,0 +1,80 @@
+version: "3.8"
+
+# Important: Make sure the `selenoid` network exists before starting:
+# docker network ls | grep selenoid || docker network create selenoid
+
+services:
+  opencart:
+    image: agridyaev/opencart:4.0.2-3-debian-12-r33
+    container_name: opencart
+    ports:
+      - 8080:8080
+      - 443:8443
+    environment:
+      - OPENCART_HOST=192.168.0.30:8080
+      - OPENCART_DATABASE_HOST=db
+      - OPENCART_DATABASE_PORT_NUMBER=3306
+      - OPENCART_DATABASE_USER=opencart
+      - OPENCART_DATABASE_PASSWORD=secret
+      - OPENCART_DATABASE_NAME=opencart
+      - ALLOW_EMPTY_PASSWORD=yes
+    depends_on:
+      - db
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: opencart
+      MYSQL_USER: opencart
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - default
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5
+    container_name: opencart-phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: opencart
+      PMA_PASSWORD: secret
+    depends_on:
+      - db
+    ports:
+      - "${PHPADMIN_PORT:-8090}:80"
+
+# Test service: waits for opencart to be available and runs pytest on Selenoid
+  tests:
+    build:
+       context: .
+       dockerfile: Dockerfile
+    container_name: opencart-tests
+    depends_on:
+      opencart:
+        condition: service_healthy
+    networks:
+      - default
+# IMPORTANT: The test image's Dockerfile must use CMD for command to work here.
+# The wait-for-it.sh script must be in the test image and executable (chmod +x).
+    command: >
+      --base_url=http://192.168.0.30:8080
+      --browser=${BROWSER:-chrome}
+      --executor=selenoid
+      --executor_url=http://selenoid:4444/wd/hub
+
+volumes:
+  db_data:
+
+networks:
+  default:
+    name: selenoid
+    external: true

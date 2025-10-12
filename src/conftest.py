@@ -7,6 +7,7 @@ import uuid
 import allure
 import pytest
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -20,26 +21,57 @@ def pytest_addoption(parser):
     """Custom command line parameters for running test, by default Chrome driver"""
     parser.addoption("--browser", action="store", default="chrome", help="Choose browser: chrome or firefox")
     parser.addoption("--base_url", action="store", default="http://localhost:8080", help="Base URL of OpenCart")
-
+    # For selenoid:
+    parser.addoption("--executor", action="store", default="local",
+                     help="local or remote (selenoid/grid)")
+    parser.addoption("--executor_url", action="store", default="http://localhost:4444/wd/hub",
+                     help="Remote executor URL, e.g. http://selenoid:4444/wd/hub")
 
 @pytest.fixture
 def browser(request):
     """Select browser"""
     browser_name = request.config.getoption("--browser")
-    if browser_name == "chrome":
-        options = ChromeOptions()
-        if platform.system() == "Windows":
-            chrome_type = ChromeType.GOOGLE
+    executor = request.config.getoption("--executor").lower()
+    executor_url = request.config.getoption("--executor_url")
+
+    if executor == "local":
+        if browser_name == "chrome":
+            options = ChromeOptions()
+            if platform.system() == "Windows":
+                chrome_type = ChromeType.GOOGLE
+            else:
+                chrome_type = ChromeType.CHROMIUM
+            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(chrome_type=chrome_type).install()),
+                                      options=options)
+        elif browser_name == "firefox":
+            options = FirefoxOptions()
+            driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
         else:
-            chrome_type = ChromeType.CHROMIUM
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(chrome_type=chrome_type).install()),
-                                  options=options)
-    elif browser_name == "firefox":
-        options = FirefoxOptions()
-        options.add_argument("-headless")
-        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
+            raise ValueError(f"Browser '{browser_name}' is not supported")
+
     else:
-        raise ValueError(f"Browser '{browser_name}' is not supported")
+        # Selenoid
+        if browser_name == "chrome":
+            options = ChromeOptions()
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--window-size=\"1920x1080\"")
+        else:
+            options = FirefoxOptions()
+
+        selenoid_opts = {
+            "sessionTimeout": "2m",
+            "timeZone": "Europe/Belgrade",
+            "enableVNC": True
+        }
+
+        options.set_capability("selenoid:options", selenoid_opts)
+
+        driver = webdriver.Remote(
+            command_executor=executor_url,
+            options=options
+        )
+
     driver.test_name = request.node.name
     driver.log_level = logging.INFO
     driver.maximize_window()
@@ -72,8 +104,8 @@ def base_url(request):
 @pytest.fixture
 def admin_credentials():
     return {
-        "username": "admin",
-        "password": "Qwerty123"
+        "username": "user",
+        "password": "bitnami"
     }
 
 
