@@ -1,4 +1,5 @@
 import logging
+import platform
 import random
 import string
 import uuid
@@ -11,6 +12,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 from webdriver_manager.firefox import GeckoDriverManager
 
 
@@ -26,9 +28,15 @@ def browser(request):
     browser_name = request.config.getoption("--browser")
     if browser_name == "chrome":
         options = ChromeOptions()
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        if platform.system() == "Windows":
+            chrome_type = ChromeType.GOOGLE
+        else:
+            chrome_type = ChromeType.CHROMIUM
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(chrome_type=chrome_type).install()),
+                                  options=options)
     elif browser_name == "firefox":
         options = FirefoxOptions()
+        options.add_argument("-headless")
         driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
     else:
         raise ValueError(f"Browser '{browser_name}' is not supported")
