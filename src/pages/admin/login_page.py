@@ -14,7 +14,7 @@ class AdminLoginPage(BasePage):
 
     def open_page(self):
         """Open page"""
-        return super().open_page("admin")
+        return super().open_page("administration")
 
     @allure.step("Verify that the login page contains all required elements")
     def is_loaded(self):

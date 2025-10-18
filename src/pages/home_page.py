@@ -10,7 +10,7 @@ from src.pages.components.header import HeaderComponent
 class HomePage(BasePage):
     """Home page"""
     PRODUCT_CARD = (By.CLASS_NAME, "product-thumb")
-    CART = (By.ID, "cart")
+    CART = (By.ID, "header-cart")
     ADD_PRODUCT_TO_CART_BUTTON = (By.CSS_SELECTOR, "button[title='Add to Cart']")
 
     def __init__(self, browser, base_url):
