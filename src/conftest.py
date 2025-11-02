@@ -3,6 +3,7 @@ import platform
 import random
 import string
 import uuid
+from email.policy import default
 
 import allure
 import pytest
@@ -20,6 +21,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 def pytest_addoption(parser):
     """Custom command line parameters for running test, by default Chrome driver"""
     parser.addoption("--browser", action="store", default="chrome", help="Choose browser: chrome or firefox")
+    parser.addoption("--browser_version", action="store", default="latest", help="Choose browser version")
     parser.addoption("--base_url", action="store", default="http://localhost:8080", help="Base URL of OpenCart")
     # For selenoid:
     parser.addoption("--executor", action="store", default="local",
@@ -31,6 +33,7 @@ def pytest_addoption(parser):
 def browser(request):
     """Select browser"""
     browser_name = request.config.getoption("--browser")
+    browser_version = request.config.getoption("--browser_version")
     executor = request.config.getoption("--executor").lower()
     executor_url = request.config.getoption("--executor_url")
 
@@ -60,6 +63,7 @@ def browser(request):
             options = FirefoxOptions()
 
         selenoid_opts = {
+            "version": browser_version,
             "sessionTimeout": "2m",
             "timeZone": "Europe/Belgrade",
             "enableVNC": True
