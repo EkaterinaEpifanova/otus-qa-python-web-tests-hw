@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 
 class CartDropdown:
     """Cart dropdown element of the page"""
-    BUTTON = (By.XPATH, "//*[@id='cart']/div/button")
+    BUTTON = (By.XPATH, "//*[@id='header-cart']")
     DROPDOWN = (By.CSS_SELECTOR, ".dropdown-menu.show")
 
     def __init__(self, page):

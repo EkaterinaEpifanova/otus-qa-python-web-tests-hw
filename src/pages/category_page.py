@@ -8,7 +8,7 @@ from src.pages.components.header import HeaderComponent
 
 class CategoryPage(BasePage):
     """Product category page"""
-    TITLE = (By.XPATH, "//h1[text()='Desktops']")
+    TITLE = (By.XPATH, "//h2[text()='Desktops']")
     PRODUCT_CARD = (By.CLASS_NAME, "product-thumb")
     DESKTOP_URL = "index.php?route=product/category&path=20"
 

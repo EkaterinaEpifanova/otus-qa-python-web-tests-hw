@@ -80,7 +80,7 @@ class AdminProductsPage(BasePage):
         """Method that verify the product is shown"""
         rows = self.get_elements(self.TABLE_ROWS)
         for r in rows:
-            if r.find_element(by=self.ROW_NAME_CELL[0], value=self.ROW_NAME_CELL[1]).text.strip() == name:
+            if r.find_element(by=self.ROW_NAME_CELL[0], value=self.ROW_NAME_CELL[1]).text.strip().startswith(name):
                 return True
         return False
 

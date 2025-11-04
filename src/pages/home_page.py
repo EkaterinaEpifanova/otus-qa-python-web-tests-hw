@@ -43,6 +43,13 @@ class HomePage(BasePage):
         """Alert"""
         return self.get_element((By.CSS_SELECTOR, ".alert-success")).text
 
+    @allure.step("Close Alert message")
+    def close_success_alert_text(self):
+        """Close Alert"""
+        if self.get_element((By.CSS_SELECTOR, ".alert-success")).is_displayed():
+            self.click((By.XPATH, "//div[contains(@class, 'alert-success')]//button[contains(@class, 'btn-close')]"))
+        return self
+
     @allure.step("Get cart counter")
     def cart_count(self) -> int:
         """Cart counter"""
