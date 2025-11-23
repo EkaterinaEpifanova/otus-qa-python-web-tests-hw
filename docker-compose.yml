@@ -53,23 +53,23 @@ services:
       - "${PHPADMIN_PORT:-8090}:80"
 
 # Test service: waits for opencart to be available and runs pytest on Selenoid
-  tests:
-    build:
-       context: .
-       dockerfile: Dockerfile
-    container_name: opencart-tests
-    depends_on:
-      opencart:
-        condition: service_healthy
-    networks:
-      - default
+#  tests:
+#    build:
+#       context: .
+#       dockerfile: Dockerfile
+#    container_name: opencart-tests
+#    depends_on:
+#      opencart:
+#        condition: service_healthy
+#    networks:
+#      - default
 # IMPORTANT: The test image's Dockerfile must use CMD for command to work here.
 # The wait-for-it.sh script must be in the test image and executable (chmod +x).
-    command: >
-      --base_url=http://192.168.0.30:8080
-      --browser=${BROWSER:-chrome}
-      --executor=selenoid
-      --executor_url=http://selenoid:4444/wd/hub
+#   command: >
+#     --base_url=http://192.168.0.30:8080
+#     --browser=${BROWSER:-chrome}
+#     --executor=selenoid
+#     --executor_url=http://selenoid:4444/wd/hub
 
 volumes:
   db_data:
