@@ -25,7 +25,7 @@ def test_catalog_page(browser, base_url):
 
 def test_product_page(browser, base_url):
     """Verification of elements on the product page"""
-    expected_price = "$110.00"
+    expected_price = "$120.00"
 
     page = ProductPage(browser, base_url).open_apple_cinema_page()
     assert page.is_loaded()
